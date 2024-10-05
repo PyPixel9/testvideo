@@ -3,132 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Play/Pause YouTube Video</title>
+    <title>Custom YouTube Video Player</title>
     <style>
-        /* Styling for the welcome screen */
+        /* Styling for the entire body */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Centered container for video and controls */
+        .video-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            width: 900px;
+        }
+
+        /* Welcome screen styling */
         .welcome-screen {
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: #f0f0f0;
-            width: 560px;
-            height: 315px;
+            width: 800px;
+            height: 450px;
             font-size: 24px;
-            font-family: Arial, sans-serif;
             color: #333;
             text-align: center;
         }
 
-        /* Initially hide the video container */
-        .video-container {
-            display: none;
-            position: relative;
-            width: 560px;
-            height: 315px;
-        }
-
         /* Full iframe size */
         iframe {
-            width: 100%;
-            height: 100%;
+            width: 800px;
+            height: 450px;
+            border-radius: 10px;
         }
 
-        /* Overlay to block clicks */
-        .video-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: transparent; /* Transparent overlay to prevent clicks */
-            z-index: 1;
-        }
-
-        /* Blackout overlay to hide YouTube logo */
+        /* Blackout overlay */
         .blackout {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%; /* Covers the entire video */
-            background-color: black;
-            z-index: 2; /* This must be above the video */
+            width: 800px;
+            height: 450px;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2;
             display: none; /* Initially hidden */
+            border-radius: 10px;
         }
 
-        /* Resuming Screen */
+        /* Resuming screen */
         .resuming-screen {
-            display: none; /* Initially hidden */
+            display: none;
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            font-family: Arial, sans-serif;
             color: #333;
-            z-index: 3; /* Above all other elements */
+            z-index: 3;
         }
 
-        /* Custom Play/Pause Buttons */
+        /* Custom Controls */
         .controls {
-            margin-top: 10px;
+            margin-top: 20px;
             display: flex;
             align-items: center;
+            width: 100%;
         }
 
-        .controls button {
+        .controls button, .controls input[type="range"] {
             font-size: 16px;
-            padding: 10px 20px;
+            padding: 10px;
             cursor: pointer;
+            margin-right: 10px;
         }
 
-        /* Volume Slider */
+        .controls input[type="range"] {
+            width: 400px;
+            height: 6px;
+            background: #ddd;
+            border-radius: 5px;
+        }
+
         .volume-slider {
-            margin-left: 10px;
-            width: 80px; /* Smaller width for the slider */
+            width: 100px;
         }
 
-        /* Time Display */
         .time-display {
-            margin-left: 10px;
             font-size: 16px;
-            font-family: Arial, sans-serif;
+            margin-left: 10px;
+        }
+
+        /* Beautified page styles */
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .video-container {
+            position: relative;
         }
     </style>
 </head>
 <body>
-    <h1>Watch the Video Below</h1>
 
-    <!-- Welcome Screen -->
-    <div id="welcomeScreen" class="welcome-screen">
-        <p>Welcome! The video is playing...</p>
-    </div>
-
-    <!-- YouTube Video Embed (Initially hidden) -->
-    <div id="videoContainer" class="video-container">
-        <div id="player"></div> <!-- YouTube Player will be embedded here -->
-        <!-- Overlay to block clicks -->
-        <div class="video-overlay"></div>
-        <!-- Blackout overlay to hide YouTube logo -->
-        <div id="blackout" class="blackout"></div>
-        <!-- Resuming screen -->
-        <div id="resumingScreen" class="resuming-screen">
-            <p>Resuming video...</p>
+    <div class="video-container">
+        <div id="playerContainer">
+            <div id="blackout" class="blackout"></div>
+            <div id="player"></div> <!-- YouTube Player will be embedded here -->
         </div>
-    </div>
-
-    <!-- Custom Controls -->
-    <div class="controls" id="controlsContainer" style="display: none;">
-        <button id="playButton">Play</button>
-        <button id="pauseButton">Pause</button>
-        <button id="rewindButton">-10s</button>
-        <button id="forwardButton">+10s</button>
-        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="100">
-        <div class="time-display" id="timeDisplay">0:00 / 0:00</div>
+        <div class="controls">
+            <button id="playButton">Play</button>
+            <button id="pauseButton">Pause</button>
+            <button id="rewindButton">-10s</button>
+            <button id="forwardButton">+10s</button>
+            <input type="range" id="seekSlider" min="0" max="100" value="0">
+            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="100">
+            <div class="time-display" id="timeDisplay">0:00 / 0:00</div>
+        </div>
     </div>
 
     <!-- Load YouTube IFrame API -->
@@ -142,9 +150,9 @@
         let rewindButton = document.getElementById('rewindButton');
         let forwardButton = document.getElementById('forwardButton');
         let volumeSlider = document.getElementById('volumeSlider');
+        let seekSlider = document.getElementById('seekSlider');
         let timeDisplay = document.getElementById('timeDisplay');
         let blackout = document.getElementById('blackout');
-        let resumingScreen = document.getElementById('resumingScreen');
 
         // Function to create the YouTube Player
         function onYouTubeIframeAPIReady() {
@@ -167,25 +175,31 @@
 
         // Function to handle player events when the player is ready
         function onPlayerReady(event) {
-            // Show custom controls after welcome screen disappears
-            setTimeout(function() {
-                document.getElementById('welcomeScreen').style.display = 'none';
-                document.getElementById('videoContainer').style.display = 'block';
-                document.getElementById('controlsContainer').style.display = 'block';
-            }, 5000); // 5-second delay for welcome screen
+            // Update time display and seek slider every second
+            setInterval(function() {
+                let currentTime = player.getCurrentTime();
+                let duration = player.getDuration();
+                timeDisplay.innerText = formatTime(currentTime) + ' / ' + formatTime(duration);
+                seekSlider.value = (currentTime / duration) * 100;
+
+                // Show blackout screen in the last 2 seconds of the video
+                if (duration - currentTime <= 2) {
+                    blackout.style.display = 'block';
+                }
+            }, 1000);
 
             // Play Button Click Event
             playButton.addEventListener('click', function() {
-                resumingScreen.style.display = 'flex'; // Show the resuming screen
-                setTimeout(function() {
-                    resumingScreen.style.display = 'none'; // Hide the resuming screen after 2 seconds
-                    player.playVideo(); // Play the video
-                }, 2000); // 2000 milliseconds = 2 seconds
+                blackout.style.display = 'none'; // Hide blackout when play is clicked
+                player.playVideo(); // Play the video
             });
 
             // Pause Button Click Event
             pauseButton.addEventListener('click', function() {
-                player.pauseVideo();
+                blackout.style.display = 'block'; // Show blackout immediately
+                setTimeout(function() {
+                    player.pauseVideo(); // Pause the video after showing blackout
+                }, 0); // No delay
             });
 
             // Rewind Button Click Event
@@ -202,16 +216,14 @@
 
             // Volume Slider Change Event
             volumeSlider.addEventListener('input', function() {
-                let volume = volumeSlider.value;
-                player.setVolume(volume); // Set volume according to the slider
+                player.setVolume(volumeSlider.value); // Set volume based on slider
             });
 
-            // Update time display every second
-            setInterval(function() {
-                let currentTime = player.getCurrentTime();
-                let duration = player.getDuration();
-                timeDisplay.innerText = formatTime(currentTime) + ' / ' + formatTime(duration);
-            }, 1000);
+            // Seek Slider Change Event
+            seekSlider.addEventListener('input', function() {
+                let newTime = player.getDuration() * (seekSlider.value / 100);
+                player.seekTo(newTime, true); // Seek to new time
+            });
         }
 
         // Function to format time from seconds to mm:ss
@@ -224,11 +236,9 @@
         // Function to handle state changes in the player
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.PAUSED) {
-                // Show blackout overlay when paused
-                blackout.style.display = 'block';
-            } else {
-                // Hide blackout overlay when playing
-                blackout.style.display = 'none';
+                blackout.style.display = 'block'; // Show blackout when video is paused
+            } else if (event.data === YT.PlayerState.PLAYING) {
+                blackout.style.display = 'none'; // Hide blackout when video is playing
             }
         }
     </script>
