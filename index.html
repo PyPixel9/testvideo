@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Play/Pause YouTube Video & Student Assistant Chatbot</title>
+    <title>Watch Video & Chat with Assistant</title>
     <style>
         /* General Body Styling */
         body {
@@ -19,22 +19,23 @@
             height: 100vh;
         }
 
-        h1 {
-            text-align: center;
-            margin-top: 20px;
-            color: #333;
-        }
-
         /* Video Container */
         .video-container {
             background-color: #fff;
-            padding: 30;
+            padding: 0; /* Remove padding */
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
             width: 70%;
             margin-top: 20px;
-
             position: relative; 
+            display: flex;
+            justify-content: center; /* Center the video */
+        }
+
+        /* Set the dimensions for the player */
+        #player {
+            width: 100%;
+            height: 500px; /* Adjust the height for a centered and larger video */
         }
 
         /* Permanent overlay to prevent interaction with YouTube */
@@ -98,10 +99,11 @@
             padding: 20px;
             border-radius: 10px;
             margin-top: 20px;
+            height: 200px; /* Reduce the height of the chatbox */
         }
 
         #messages {
-            height: 300px;
+            height: 120px; /* Smaller height for the messages section */
             padding: 10px;
             overflow-y: scroll;
             background-color: #f9f9f9;
@@ -156,7 +158,6 @@
 </head>
 <body>
     <div class="video-container">
-        <h1>Watch the Video Below</h1>
         <div id="videoContainer">
             <div id="player"></div>
             <div id="videoOverlay" class="video-overlay"></div> <!-- Transparent overlay always active -->
@@ -205,6 +206,7 @@
                 playerVars: {
                     'autoplay': 0, 
                     'controls': 0,
+                    'cc_load_policy': 1, // Turn on captions
                     'modestbranding': 1,
                     'rel': 0,
                     'showinfo': 0,
